@@ -1,5 +1,8 @@
 package refactoring;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Smelly Example #1
  *
@@ -41,30 +44,56 @@ public class DayOfYear {
          * parameters, return type).
          */
 
-        if (month == 2) {
-            dayOfMonth += 31;
-        } else if (month == 3) {
-            dayOfMonth += 59;
-        } else if (month == 4) {
-            dayOfMonth += 90;
-        } else if (month == 5) {
-            dayOfMonth += 31 + 28 + 31 + 30;
-        } else if (month == 6) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31;
-        } else if (month == 7) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30;
-        } else if (month == 8) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31;
-        } else if (month == 9) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31;
-        } else if (month == 10) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30;
-        } else if (month == 11) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31;
-        } else if (month == 12) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 31;
+        // leap years are all numbers divisible by 4
+        // if divisible by 100 --> it is not a leap year
+        // if it is divisible by 4, 100 and 400 then it is a leap year
+        // --> with leap years, february (2) has 29 days instead of usual 28
+
+        // 30 days has sept(9), april(4), june(6), november(11)
+        // other months has 31 days, jan(1), march(3), may(5), july(7), august(8),
+        // oct(10), dec(12)
+
+        Map<Integer, Integer> days = new HashMap<Integer, Integer>();
+
+        days.put(1, 31); // jan
+        days.put(2, 28); // feb
+        days.put(3, 31); // mar
+        days.put(4, 30); // apr
+        days.put(5, 31); // may
+        days.put(6, 30); // jun
+        days.put(7, 31); // jul
+        days.put(8, 31); // aug
+        days.put(9, 30); // sep
+        days.put(10, 31); // oct
+        days.put(11, 30); // nov
+        days.put(12, 31); // dec
+
+        boolean leapYear = false;
+
+        if (year % 4 == 0) {
+            leapYear = true;
+            if (year % 100 == 0 && year % 400 != 0) {
+                leapYear = false;
+            } else if (year % 100 == 0 && year % 400 == 0) {
+                leapYear = true;
+            }
         }
 
-        return dayOfMonth;
+        if (leapYear) {
+            days.put(2, 29);
+        }
+
+        int day = 0;
+
+        if (month == 1) {
+            day = dayOfMonth;
+        } else if (month > 1) {
+            for (int i = 1; i < month; i++) {
+                day += days.get(i);
+            }
+            day += dayOfMonth;
+        }
+
+        return day;
     }
 }
